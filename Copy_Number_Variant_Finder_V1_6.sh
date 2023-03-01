@@ -1,6 +1,7 @@
 #!/bin/bash
 #BT February 22, 2023
 #GUI Version: Tested on Linux and Mac
+#Version 1.6 updates plot axis label and changes color in tile plots.  
   
 zenity --width 1000 --info --title "Copy Number Variation Finder (CNVF) GUI: Click OK to start" --text "
   
@@ -35,7 +36,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-Version Information:  Version 1.5, February 22, 2023"
+Version Information:  Version 1.6, February 28, 2023"
   
 directory=`zenity --width 500 --title="DIRECTORY" --text "Enter text to create a new directory (e.g. Sample1234).  
 WARNING: No spaces or symbols other than an underscore." --entry`
@@ -275,7 +276,7 @@ tr ' ' ',' < $i > ${i%.*}.nf5
 tr '\t' ',' < ${i%.*}.nf5 > ${i%.*}.nf6
 done
 
-printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=Sample, fill=factor(CovGp))) + geom_tile() + scale_fill_manual(values =c("0"="firebrick1","1"="firebrick", "2"="dodgerblue4", "3"="darkolivegreen", "4"="darkblue", "5"="darkorange2", "6"="darkorange"), name = "Coverage Groups") + theme(axis.text.x = element_text(angle = 90, size =8, vjust = 0.5, hjust=1), axis.text.y = element_text(size = 8)) + xlab("Position")\np2 <- p + labs(title= sub("\\\.nf6$","",i)) \nggsave(plot = p2, filename= paste0(i, "AFbins.jpeg")) \n#p3 <- ggplotly(p2) \n#htmlwidgets::saveWidget(p3, file = paste0(i, ".html")) \n}' > AFbin.R
+printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=Sample, fill=factor(CovGp))) + geom_tile() + scale_fill_manual(values =c("0"="#273046","1"="#046C9A", "2"="#3B9AB2", "3"="darkgreen", "4"="#EBCC2A", "5"="#E58601", "6"="#B40F20"), name = "Coverage Groups") + theme(axis.text.x = element_text(angle = 90, size =8, vjust = 0.5, hjust=1), axis.text.y = element_text(size = 8)) + xlab("Position")\np2 <- p + labs(title= sub("\\\.nf6$","",i)) \nggsave(plot = p2, filename= paste0(i, "AFbinsc3.tiff")) \n#p3 <- ggplotly(p2) \n#htmlwidgets::saveWidget(p3, file = paste0(i, ".html")) \n}' > AFbin.R
 
 Rscript AFbin.R
 for i in *nf6AFbins*; do mv $i ${i%.nf6*}_ControlCompare_CoverageGroups.jpeg; done
@@ -283,7 +284,7 @@ mkdir CovPlot
 cp *.nf6 ./CovPlot
 cd CovPlot 
 
-printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=CovBMean, color=Sample)) + geom_point(size=1, alpha = 0.5) + theme(axis.text.x = element_text(angle = 90, size =8), axis.text.y = element_text(size = 8)) + labs(title="_Coverage_Variation") + ylab("Coverage Compared to Mean of All Samples") \np2 <- p + labs(title= sub("\\\.nf6$","",i))\nggsave(plot = p2, filename= paste0(i, "Covbins.jpeg"), width=10, height=5, units=c("in"))  \n}' > BFbin.R
+printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=CovBMean, color=Sample)) + geom_point(size=1, alpha = 0.5) + theme(axis.text.x = element_text(angle = 90, size =8), axis.text.y = element_text(size = 8)) + labs(title="_Coverage_Variation") + ylab("Coverage Compared to Control") \np2 <- p + labs(title= sub("\\\.nf6$","",i))\nggsave(plot = p2, filename= paste0(i, "Covbins.jpeg"), width=10, height=5, units=c("in"))  \n}' > BFbin.R
 
 Rscript BFbin.R
 for i in *nf6Covbins*; do mv $i ${i%.nf6*}_ControlCompare_Coverage.jpeg; done
@@ -350,7 +351,7 @@ tr ' ' ',' < $i > ${i%.*}.nf5
 tr '\t' ',' < ${i%.*}.nf5 > ${i%.*}.nf6
 done
  
-printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=Sample, fill=factor(CovGp))) + geom_tile() + scale_fill_manual(values =c("0"="firebrick1","1"="firebrick", "2"="dodgerblue4", "3"="darkolivegreen", "4"="darkblue", "5"="darkorange2", "6"="darkorange"), name = "Coverage Groups") + theme(axis.text.x = element_text(angle = 90, size =8, vjust = 0.5, hjust=1), axis.text.y = element_text(size = 8)) + xlab("Position")\np2 <- p + labs(title= sub("\\\.nf6$","",i)) \nggsave(plot = p2, filename= paste0(i, "AFbins.jpeg")) \n#p3 <- ggplotly(p2) \n#htmlwidgets::saveWidget(p3, file = paste0(i, ".html")) \n}' > AFbin.R
+printf 'library(ggplot2) \nfile_list=list.files(full.names=F, pattern="\\\.nf6") \nfilenames <- gsub("\\\.nf6$","", list.files(pattern="\\\_tmp$")) \nfor (i in file_list){ \ng<-read.csv(i) \np <- ggplot(g, aes(x=Position, y=Sample, fill=factor(CovGp))) + geom_tile() + scale_fill_manual(values =c("0"="#273046","1"="#046C9A", "2"="#3B9AB2", "3"="darkgreen", "4"="#EBCC2A", "5"="#E58601", "6"="#B40F20"), name = "Coverage Groups") + theme(axis.text.x = element_text(angle = 90, size =8, vjust = 0.5, hjust=1), axis.text.y = element_text(size = 8)) + xlab("Position")\np2 <- p + labs(title= sub("\\\.nf6$","",i)) \nggsave(plot = p2, filename= paste0(i, "AFbinsc3.tiff")) \n#p3 <- ggplotly(p2) \n#htmlwidgets::saveWidget(p3, file = paste0(i, ".html")) \n}' > AFbin.R
 
 Rscript AFbin.R
 
